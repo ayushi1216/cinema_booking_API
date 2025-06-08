@@ -4,7 +4,7 @@ const app = express();
 const db = require('./models');
 
 app.use(express.json());
-
+app.use('/cinemas', require('./routes/cinema.routes'));
 
 const PORT = process.env.PORT || 2800;
 

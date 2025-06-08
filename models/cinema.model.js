@@ -13,6 +13,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
+        cinemaName: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            unique: true
+        }
 
     });
 
