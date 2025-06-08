@@ -51,5 +51,41 @@ exports.purchaseSpecificSeat = async (cinemaId, seatNumber) => {
     });
 };
 
+// For purchasing two Consecutive (Nearby Seats) in Cinema
+exports.purchaseConsecutiveSeats = async (cinemaId) => {
+    return await sequelize.transaction(async (t) => {
+        const seats = await Seat.findAll({
+            where: {
+                cinemaId,
+                isBooked: false,
+            },
+            order: [['seatNumber', 'ASC']],
+            lock: t.LOCK.UPDATE,
+            transaction: t,
+        });
 
+        // Iterating through all seats, to check consecutive (not booked) seats
+        for (let i = 0; i < seats.length - 1; i++) {
+            const curr = seats[i];
+            const next = seats[i + 1];
+
+            if (next.seatNumber === curr.seatNumber + 1) {
+
+                curr.isBooked = true;
+                next.isBooked = true;
+
+                await curr.save({ transaction: t });
+                await next.save({ transaction: t });
+
+                return {
+                    seatNumbers: [curr.seatNumber, next.seatNumber],
+                    message: 'Consecutive Seats booked successfully',
+                };
+            }
+        }
+
+        throw new Error('No two consectutive seats availiable !!')
+
+    });
+}
 
