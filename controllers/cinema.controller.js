@@ -12,3 +12,15 @@ exports.createCinema = async (req, res) => {
         });
     }
 };
+
+exports.purchaseSpecificSeat = async (req, res) => {
+    try {
+        console.log('Hello worl')
+        const { cinemaId, seatNumber } = req.body;
+        const result = await cinemaService.purchaseSpecificSeat(+cinemaId, +seatNumber);
+        console.log(result, 'result')
+        res.json(result);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+}
